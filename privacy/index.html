@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting... | Acuteflow</title>
+    <script>
+        (function() {            
+            const supportedLanguages = {
+                'en': '/privacy/en/',
+                'ja': '/privacy/ja/',
+                'ko': '/privacy/ko/',
+                'de': '/privacy/de/',
+                'fr': '/privacy/fr/',
+                'es': '/privacy/es/',
+                'pt': '/privacy/pt/',
+                'it': '/privacy/it/',
+                'zh': '/privacy/zh-hant/' // Default Chinese to Traditional
+            };
+            
+            const userLang = navigator.language || navigator.userLanguage;
+            const langCode = userLang.split('-')[0].toLowerCase();
+            
+            const targetPath = supportedLanguages[langCode] || '/privacy/en/';
+           
+            window.location.replace(targetPath);
+        })();
+    </script>
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=/privacy/en/">
+    </noscript>
+</head>
+<body style="background-color: #f4f7f6; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <p>Loading your language preference...</p>
+</body>
+</html>
