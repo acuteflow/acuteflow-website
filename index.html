@@ -1,7 +1,575 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acuteflow | App & Web Development</title>
+  <meta name="description" content="Acuteflow builds thoughtful apps and web experiences with precision, clarity, and momentum.">
+  <style>
+    :root {
+      --af-river-blue: #336699;
+      --af-flow-cyan: #66CCCC;
+      --af-soft-silver: #CCCCCC;
+      --af-charcoal-blue: #333333;
+      --af-white: #FFFFFF;
+      --af-muted: #666666;
+      --af-bg: #F7F9FA;
+      --af-border: #DDE6EA;
+      --af-deep-blue: #244F78;
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 30px;
+      --shadow: 0 18px 54px rgba(35, 65, 86, .09);
+      --shadow-hover: 0 22px 60px rgba(35, 65, 86, .14);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--af-charcoal-blue);
+      background: var(--af-white);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, .88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(221, 230, 234, .65);
+    }
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--af-river-blue);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 27px;
+      font-weight: 700;
+      letter-spacing: -.04em;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      position: relative;
+      border-radius: 13px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--af-river-blue), #6699CC);
+      box-shadow: inset 0 -7px 14px rgba(0, 0, 0, .14);
+    }
+    .brand-mark::before {
+      content: "A";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      transform: translateY(-2px);
+      color: #fff;
+      font: 700 29px Georgia, serif;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      left: 7px;
+      right: 7px;
+      bottom: 10px;
+      height: 4px;
+      border-radius: 999px;
+      transform: rotate(-10deg);
+      background: var(--af-flow-cyan);
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      color: var(--af-muted);
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .nav-links a:hover { color: var(--af-river-blue); }
+    .button {
+      display: inline-flex;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(51, 102, 153, .16);
+    }
+    .button-primary { background: var(--af-river-blue); color: #fff; }
+    .button-secondary {
+      color: var(--af-river-blue);
+      border-color: rgba(51, 102, 153, .3);
+      background: #fff;
+    }
+    .button-accent { color: var(--af-charcoal-blue); background: var(--af-flow-cyan); }
+    .nav .button { min-height: 46px; padding-inline: 20px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 74px 0 82px;
+      background:
+        radial-gradient(circle at 89% 12%, rgba(102, 204, 204, .19) 0, transparent 30%),
+        linear-gradient(180deg, #fff 0%, #F7F9FA 100%);
+    }
+    .hero::after {
+      content: "";
+      width: 560px;
+      height: 560px;
+      position: absolute;
+      right: -290px;
+      bottom: -330px;
+      border: 1px solid rgba(102, 204, 204, .25);
+      border-radius: 50%;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, 1fr) 490px;
+      gap: 68px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      padding: 8px 14px;
+      margin-bottom: 22px;
+      border-radius: 999px;
+      background: rgba(102, 204, 204, .16);
+      color: var(--af-river-blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      height: 7px;
+      width: 7px;
+      border-radius: 50%;
+      background: var(--af-flow-cyan);
+    }
+    h1 {
+      max-width: 650px;
+      margin: 0 0 20px;
+      color: var(--af-river-blue);
+      font: 700 clamp(48px, 5.2vw, 70px)/1.04 Georgia, "Times New Roman", serif;
+      letter-spacing: -.055em;
+    }
+    h1 span { color: var(--af-charcoal-blue); }
+    .hero-copy {
+      max-width: 540px;
+      margin: 0 0 34px;
+      color: var(--af-muted);
+      font-size: clamp(17px, 1.7vw, 19px);
+    }
+    .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .trust-line {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 47px;
+      color: var(--af-muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .trust-line::before {
+      content: "";
+      width: 42px;
+      height: 2px;
+      flex: none;
+      background: var(--af-flow-cyan);
+    }
+
+    .showcase {
+      min-height: 515px;
+      position: relative;
+      border: 1px solid var(--af-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .browser {
+      overflow: hidden;
+      height: 100%;
+      border-radius: 21px;
+      background: #F4F7F9;
+      border: 1px solid #EDF2F4;
+    }
+    .browser-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 46px;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid #E8EEF1;
+    }
+    .browser-bar i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--af-soft-silver);
+    }
+    .browser-url {
+      height: 20px;
+      width: 154px;
+      margin-left: 14px;
+      border-radius: 8px;
+      background: #F3F6F8;
+    }
+    .product-ui { padding: 27px 22px; }
+    .ui-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 27px; }
+    .ui-brand {
+      color: var(--af-river-blue);
+      font: 700 20px Georgia, serif;
+    }
+    .ui-menu { width: 62px; height: 9px; border-radius: 8px; background: #E2E9ED; }
+    .ui-card {
+      min-height: 178px;
+      padding: 26px 24px;
+      margin-bottom: 19px;
+      border-radius: 21px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--af-river-blue), #537FA9);
+    }
+    .ui-label { font-size: 12px; opacity: .77; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+    .ui-title { margin: 12px 0 21px; font-size: 23px; line-height: 1.2; font-weight: 700; }
+    .flow-track { height: 8px; border-radius: 999px; background: rgba(255,255,255,.27); overflow: hidden; }
+    .flow-track span {
+      display: block;
+      width: 76%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--af-flow-cyan);
+    }
+    .ui-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .ui-mini {
+      min-height: 112px;
+      padding: 17px;
+      border: 1px solid #E0E8EC;
+      border-radius: 16px;
+      background: #fff;
+    }
+    .ui-mini small { color: var(--af-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .metric { margin-top: 8px; color: var(--af-river-blue); font-size: 28px; line-height: 1; font-weight: 800; }
+    .floating-tag {
+      position: absolute;
+      right: -18px;
+      bottom: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      background: var(--af-charcoal-blue);
+      border-radius: 13px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 15px 34px rgba(30, 38, 45, .17);
+    }
+    .floating-tag span { color: var(--af-flow-cyan); font-size: 19px; }
+
+    section.content { padding: 86px 0; }
+    .section-intro {
+      max-width: 660px;
+      margin: 0 auto 47px;
+      text-align: center;
+    }
+    .section-intro h2, .split h2, .cta h2 {
+      margin: 0 0 14px;
+      color: var(--af-river-blue);
+      font: 700 clamp(34px, 3.7vw, 46px)/1.14 Georgia, serif;
+      letter-spacing: -.045em;
+    }
+    .section-intro p, .split p {
+      margin: 0;
+      color: var(--af-muted);
+      font-size: 17px;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .service-card {
+      position: relative;
+      min-height: 258px;
+      padding: 30px 27px;
+      border: 1px solid var(--af-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+    .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .service-icon {
+      display: grid;
+      place-items: center;
+      width: 49px;
+      height: 49px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      color: var(--af-river-blue);
+      background: rgba(102, 204, 204, .18);
+      font-size: 25px;
+      font-weight: 800;
+    }
+    .service-card h3 { margin: 0 0 10px; color: var(--af-charcoal-blue); font-size: 21px; }
+    .service-card p { margin: 0; color: var(--af-muted); font-size: 15px; }
+    .service-card::after {
+      content: "";
+      position: absolute;
+      left: 27px;
+      bottom: 25px;
+      width: 42px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--af-flow-cyan);
+    }
+
+    .approach { background: var(--af-bg); }
+    .split {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 70px;
+      align-items: start;
+    }
+    .steps { display: grid; gap: 14px; }
+    .step {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 17px;
+      padding: 20px 22px;
+      border: 1px solid var(--af-border);
+      border-radius: 17px;
+      background: #fff;
+    }
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      color: var(--af-river-blue);
+      background: rgba(102,204,204,.19);
+      font-weight: 800;
+    }
+    .step h3 { margin: 1px 0 5px; font-size: 17px; }
+    .step p { font-size: 14px; }
+
+    .cta-wrap { padding: 80px 0 92px; }
+    .cta {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 36px;
+      align-items: center;
+      padding: clamp(38px, 5vw, 60px);
+      border-radius: var(--radius-lg);
+      color: #fff;
+      background: var(--af-river-blue);
+    }
+    .cta::after {
+      content: "";
+      position: absolute;
+      right: -95px;
+      top: -185px;
+      width: 400px;
+      height: 400px;
+      border: 52px solid rgba(102,204,204,.13);
+      border-radius: 50%;
+    }
+    .cta h2 { position: relative; z-index: 1; color: #fff; max-width: 620px; }
+    .cta p { position: relative; z-index: 1; max-width: 560px; margin: 0; color: rgba(255,255,255,.75); }
+    .cta .button { position: relative; z-index: 1; white-space: nowrap; }
+
+    .site-footer {
+      padding: 29px 0;
+      color: var(--af-muted);
+      border-top: 1px solid var(--af-border);
+      font-size: 14px;
+    }
+    .footer-row { display: flex; justify-content: space-between; gap: 22px; align-items: center; }
+    .footer-links { display: flex; gap: 22px; }
+
+    @media (max-width: 940px) {
+      .hero-grid, .split, .cta { grid-template-columns: 1fr; }
+      .hero-grid { gap: 48px; }
+      .hero { padding-top: 54px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .showcase { max-width: 510px; }
+      .floating-tag { right: 18px; }
+      .cta .button { justify-self: start; }
+    }
+    @media (max-width: 720px) {
+      .container { width: min(100% - 34px, 1180px); }
+      .nav-links a:not(.button) { display: none; }
+      .nav-links { gap: 0; }
+      h1 { font-size: clamp(41px, 12vw, 52px); }
+      .showcase { min-height: 478px; padding: 13px; }
+      section.content { padding: 65px 0; }
+      .footer-row { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 430px) {
+      .brand { font-size: 23px; }
+      .nav .button { display: none; }
+      .hero-actions .button { width: 100%; }
+      .ui-row { grid-template-columns: 1fr; }
+      .floating-tag { display: none; }
+    }
+  </style>
+</head>
 <body>
-  <h1>Acuteflow Apps</h1>
-  <p>Welcome to the official home of Acuteflow.</p>
+  <header class="site-header">
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="Acuteflow home">
+        <span>Acuteflow</span>
+      </a>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#approach">Approach</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">App &amp; web development</div>
+          <h1>Digital products built to <span>flow.</span></h1>
+          <p class="hero-copy">
+            Acuteflow designs and develops clear, capable apps and websites that help your business move forward with confidence.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="mailto:hello@acuteflow.com">Contact us</a>
+          </div>
+          <p class="trust-line">Build with precision. Flow with purpose.</p>
+        </div>
+
+        <div class="showcase" aria-label="Illustration of a digital product interface">
+          <div class="browser">
+            <div class="browser-bar" aria-hidden="true">
+              <i></i><i></i><i></i><div class="browser-url"></div>
+            </div>
+            <div class="product-ui">
+              <div class="ui-head"><div class="ui-brand">Acuteflow</div><div class="ui-menu"></div></div>
+              <div class="ui-card">
+                <div class="ui-label">Product progress</div>
+                <div class="ui-title">A smooth path from idea to launch</div>
+                <div class="flow-track"><span></span></div>
+              </div>
+              <div class="ui-row">
+                <div class="ui-mini"><small>Performance</small><div class="metric">98%</div></div>
+                <div class="ui-mini"><small>Delivery</small><div class="metric">Live</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="floating-tag"><span>✓</span> Ready to scale</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content" id="services">
+      <div class="container">
+        <div class="section-intro">
+          <div class="eyebrow">What we build</div>
+          <h2>Solutions shaped around your goals</h2>
+          <p>Thoughtful development for products that need simplicity on the surface and reliable engineering underneath.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">◇</div>
+            <h3>Web Applications</h3>
+            <p>Responsive web platforms and internal tools that simplify work and deliver a polished user experience.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">≈</div>
+            <h3>Mobile Apps</h3>
+            <p>Intuitive mobile experiences created for speed, usability, and sustainable product growth.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">✦</div>
+            <h3>Digital Experiences</h3>
+            <p>High-quality business websites and product interfaces that strengthen your brand online.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="content approach" id="approach">
+      <div class="container split">
+        <div>
+          <div class="eyebrow">Our approach</div>
+          <h2>Precision at every step.</h2>
+          <p>We bring structure to complex ideas, translating them into useful digital products with a calm and focused process.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">01</div>
+            <div><h3>Clarify</h3><p>Define needs, priorities, and the best technical route forward.</p></div>
+          </article>
+          <article class="step">
+            <div class="step-number">02</div>
+            <div><h3>Create</h3><p>Design and develop an experience built around clarity and quality.</p></div>
+          </article>
+          <article class="step">
+            <div class="step-number">03</div>
+            <div><h3>Evolve</h3><p>Launch confidently, refine intelligently, and grow without friction.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-wrap" id="contact">
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2>Have a digital product in mind?</h2>
+            <p>Bring your idea into focus with an app or website designed for forward motion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>© 2026 Acuteflow. App &amp; web development.</div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#approach">Approach</a>
+        <a href="mailto:hello@acuteflow.com">Contact</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
